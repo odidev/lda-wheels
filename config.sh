@@ -24,8 +24,11 @@ function run_tests {
     python -c "import lda"
     pip install -r $SRC_DIR/requirements.txt
     pip install -r $SRC_DIR/test-requirements.txt
+    if [ -n "$IS_OSX" ]; then
+      # bug affects certain combinations of numpy and scipy on os x
+      pip install -U numpy scipy
+    fi
     pip install nose
-
     echo "testing"
     nosetests lda
 }
