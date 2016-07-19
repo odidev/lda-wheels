@@ -81,8 +81,6 @@ before_install:
     - source multibuild/common_utils.sh
     - source multibuild/travis_steps.sh
     - before_install
-    - pip install -r lda/requirements.txt
-    - pip install -r lda/test-requirements.txt
 
 install:
     # Maybe get and clean and patch source
