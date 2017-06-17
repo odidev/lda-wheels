@@ -12,11 +12,11 @@ env:
         - WHEELHOUSE_UPLOADER_REGION=IAD
         # Following generated with
         # travis encrypt -r ariddell/lda-wheels WHEELHOUSE_UPLOADER_SECRET=<the api key>
-        - secure:
-            "XWMqqxnv54GYxJq4lFEMzf+PrYRXgC8auie0Chr9xRVHzs7HfiQY8IYyzkDjhsW1V42lhQQUt7dv1Nqefcx9ZlMoZd/i3l4KhXxh5M9mgYpYs6kFOhUPfnKvsUluQcyLwTl8M58RmuIbXkoElIjTMYDkTLaGjX+H5aKT+1fq831JowMNDCwfMNxHV5IXgJI6DtCGXEDzUuiLplok27eQJ9kZ7TFupSyceeb3YlQYJfWKWG9iO1GZuWdj+4/HcHGdyh0MrRTSv3Glp38Gy4IKc7taR6P9UVILcgiTOsj3qoBlopPyFwt7BdSqvUZSqo3+gLEBE6UnEvMybkvhq0mapxcmoyuSh5td5f3PL/tZvdakwgJpiIKGwou85a74pm5XRtMmxfAcMcpi5ean0DMfsJ8sAlkd63jtlXDWP/o+wkqJdNYOSkmYYbpD/NRfXXij4pWZnD2rjwmAtoZ8CI68RCx0qVlvyV37n+n+bvJkJsQLg2a7VNkdPDve34By0W63rSrjPX5dTvMKS3Oo4vesnIlgVy0054qcFZbLUVQdYjTeN7iQ9TjXPGg7Anyzm4++oXn3ozo+ZHRh4j6N20CDQwa/mn2+ydvtY3vmig5/ZHtinizw+Gzt62WVe7Q+7n78hfixFc/670wLl+rwlkw32vjWqtBnxD86e/uk2+Jw0jE="
+        - secure: "XWMqqxnv54GYxJq4lFEMzf+PrYRXgC8auie0Chr9xRVHzs7HfiQY8IYyzkDjhsW1V42lhQQUt7dv1Nqefcx9ZlMoZd/i3l4KhXxh5M9mgYpYs6kFOhUPfnKvsUluQcyLwTl8M58RmuIbXkoElIjTMYDkTLaGjX+H5aKT+1fq831JowMNDCwfMNxHV5IXgJI6DtCGXEDzUuiLplok27eQJ9kZ7TFupSyceeb3YlQYJfWKWG9iO1GZuWdj+4/HcHGdyh0MrRTSv3Glp38Gy4IKc7taR6P9UVILcgiTOsj3qoBlopPyFwt7BdSqvUZSqo3+gLEBE6UnEvMybkvhq0mapxcmoyuSh5td5f3PL/tZvdakwgJpiIKGwou85a74pm5XRtMmxfAcMcpi5ean0DMfsJ8sAlkd63jtlXDWP/o+wkqJdNYOSkmYYbpD/NRfXXij4pWZnD2rjwmAtoZ8CI68RCx0qVlvyV37n+n+bvJkJsQLg2a7VNkdPDve34By0W63rSrjPX5dTvMKS3Oo4vesnIlgVy0054qcFZbLUVQdYjTeN7iQ9TjXPGg7Anyzm4++oXn3ozo+ZHRh4j6N20CDQwa/mn2+ydvtY3vmig5/ZHtinizw+Gzt62WVe7Q+7n78hfixFc/670wLl+rwlkw32vjWqtBnxD86e/uk2+Jw0jE="
 
 language: python
-# Default Python version is usually 2.7
+cache:
+  - pip
 python: 3.5
 sudo: required
 dist: trusty
@@ -61,6 +61,15 @@ matrix:
         - MB_PYTHON_VERSION=3.5
         - PLAT=i686
         - NP_BUILD_DEP="1.9.3"
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+        - NP_BUILD_DEP="1.9.3"
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+        - PLAT=i686
+        - NP_BUILD_DEP="1.9.3"
     - os: osx
       language: objective-c
       env:
@@ -75,9 +84,14 @@ matrix:
       env:
         - MB_PYTHON_VERSION=3.5
         - NP_BUILD_DEP="1.9.3"
+    - os: osx
+      language: objective-c
+      env:
+        - MB_PYTHON_VERSION=3.6
+        - NP_BUILD_DEP="1.9.3"
 
 before_install:
-    - BUILD_DEPENDS="numpy==$NP_BUILD_DEP"
+    - BUILD_DEPENDS="numpy==$NP_BUILD_DEP ${BUILD_DEPENDS}"
     - source multibuild/common_utils.sh
     - source multibuild/travis_steps.sh
     - before_install
@@ -85,14 +99,12 @@ before_install:
 install:
     # Maybe get and clean and patch source
     - clean_code $REPO_DIR $BUILD_COMMIT
+    # FIXME: have setup.py arrange for Cython code to be generated
+    - pip install Cython
     - make -C lda
     - build_wheel $REPO_DIR $PLAT
-    - pip install delocate
 
 script:
-    # increase number of open files allowed for tests, on OSX
-    # https://github.com/matplotlib/matplotlib/issues/3315
-    - ulimit -n 4096
     - install_run $PLAT
 
 after_success:
