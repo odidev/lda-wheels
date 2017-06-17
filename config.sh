@@ -7,19 +7,14 @@ function pre_build {
     if [ -n "$IS_OSX" ]; then
         export CC=clang
         export CXX=clang++
-        brew install pkg-config
     fi
-}
-
-function build_wheel {
-    # Override common_utils build_wheel function to fix version error
-    # pbr is easily confused about what git repository it is in, provide version
-    PBR_VERSION=${BUILD_COMMIT} build_bdist_wheel $@
+    SRC_DIR=lda
+    pip install -r $SRC_DIR/requirements.txt
 }
 
 function run_tests {
     SRC_DIR=../lda
-    echo "sanity checks"
+    echo "basic checks"
     python -c "import sys; print('\n'.join(sys.path))"
     python -c "import lda"
     pip install -r $SRC_DIR/requirements.txt
@@ -28,7 +23,6 @@ function run_tests {
       # bug affects certain combinations of numpy and scipy on os x
       pip install -U numpy scipy
     fi
-    pip install nose
     echo "testing"
-    nosetests lda
+    python -m unittest lda.tests.test_lda
 }
