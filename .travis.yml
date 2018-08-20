@@ -6,7 +6,6 @@ env:
         - TEST_DEPENDS=
         - PLAT=x86_64
         - UNICODE_WIDTH=32
-        - MANYLINUX_URL=https://nipy.bic.berkeley.edu/manylinux
         - WHEELHOUSE_UPLOADER_USERNAME=lda-worker
         - WHEELHOUSE_UPLOADER_REGION=IAD
         # Following generated with
@@ -81,7 +80,6 @@ matrix:
         - MB_PYTHON_VERSION=3.7
 
 before_install:
-    - BUILD_DEPENDS="numpy ${BUILD_DEPENDS}"
     - source multibuild/common_utils.sh
     - source multibuild/travis_steps.sh
     - before_install
