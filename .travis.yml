@@ -1,12 +1,12 @@
 env:
     global:
         - REPO_DIR=lda
-        - BUILD_COMMIT=1.0.5
+        - BUILD_COMMIT=1.0.6
         - BUILD_DEPENDS=
         - TEST_DEPENDS=
         - PLAT=x86_64
         - UNICODE_WIDTH=32
-        - NP_BUILD_DEP=1.6.2
+        - NP_BUILD_DEP=1.9.3
         - MANYLINUX_URL=https://nipy.bic.berkeley.edu/manylinux
         - WHEELHOUSE_UPLOADER_USERNAME=lda-worker
         - WHEELHOUSE_UPLOADER_REGION=IAD
@@ -45,15 +45,6 @@ matrix:
         - UNICODE_WIDTH=16
     - os: linux
       env:
-        - MB_PYTHON_VERSION=3.4
-        - NP_BUILD_DEP="1.7.1"
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.4
-        - PLAT=i686
-        - NP_BUILD_DEP="1.7.1"
-    - os: linux
-      env:
         - MB_PYTHON_VERSION=3.5
         - NP_BUILD_DEP="1.9.3"
     - os: linux
@@ -68,6 +59,15 @@ matrix:
     - os: linux
       env:
         - MB_PYTHON_VERSION=3.6
+        - PLAT=i686
+        - NP_BUILD_DEP="1.9.3"
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
+        - NP_BUILD_DEP="1.9.3"
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
         - PLAT=i686
         - NP_BUILD_DEP="1.9.3"
     - os: osx
@@ -77,17 +77,17 @@ matrix:
     - os: osx
       language: objective-c
       env:
-        - MB_PYTHON_VERSION=3.4
-        - NP_BUILD_DEP="1.7.1"
-    - os: osx
-      language: objective-c
-      env:
         - MB_PYTHON_VERSION=3.5
         - NP_BUILD_DEP="1.9.3"
     - os: osx
       language: objective-c
       env:
         - MB_PYTHON_VERSION=3.6
+        - NP_BUILD_DEP="1.9.3"
+    - os: osx
+      language: objective-c
+      env:
+        - MB_PYTHON_VERSION=3.7
         - NP_BUILD_DEP="1.9.3"
 
 before_install:
