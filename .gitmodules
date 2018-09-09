@@ -3,4 +3,4 @@
 	url = https://github.com/matthew-brett/multibuild.git
 [submodule "lda"]
 	path = lda
-	url = https://github.com/ariddell/lda
+	url = https://github.com/lda-project/lda
