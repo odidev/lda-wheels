@@ -1,3 +1,4 @@
+build: off
 environment:
   global:
     REPO_DIR: lda
@@ -11,12 +12,12 @@ environment:
       secure: irUwkBHJdprBu763o02cCyAoFZIBImYGft43VnH+wYH6Z6qRxaucbqZhiJZ1eL7U
 
   matrix:
-    - PYTHON: C:\Python35
-    - PYTHON: C:\Python35-x64
     - PYTHON: C:\Python36
     - PYTHON: C:\Python36-x64
     - PYTHON: C:\Python37
     - PYTHON: C:\Python37-x64
+    - PYTHON: C:\Python38
+    - PYTHON: C:\Python38-x64
 
 
 matrix:
