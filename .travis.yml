@@ -1,60 +1,47 @@
+version: ~> 1.0
 env:
-    global:
-        - REPO_DIR=lda
-        - BUILD_COMMIT=2.0.0
-        - BUILD_DEPENDS=
-        - TEST_DEPENDS=
-        - PLAT=x86_64
-        - UNICODE_WIDTH=32
-        - NP_BUILD_DEP=1.13.3
-        - WHEELHOUSE_UPLOADER_USERNAME=lda-worker
-        - WHEELHOUSE_UPLOADER_REGION=IAD
-        # Following generated with
-        # travis encrypt -r ariddell/lda-wheels WHEELHOUSE_UPLOADER_SECRET=<the api key>
-        - secure: "XWMqqxnv54GYxJq4lFEMzf+PrYRXgC8auie0Chr9xRVHzs7HfiQY8IYyzkDjhsW1V42lhQQUt7dv1Nqefcx9ZlMoZd/i3l4KhXxh5M9mgYpYs6kFOhUPfnKvsUluQcyLwTl8M58RmuIbXkoElIjTMYDkTLaGjX+H5aKT+1fq831JowMNDCwfMNxHV5IXgJI6DtCGXEDzUuiLplok27eQJ9kZ7TFupSyceeb3YlQYJfWKWG9iO1GZuWdj+4/HcHGdyh0MrRTSv3Glp38Gy4IKc7taR6P9UVILcgiTOsj3qoBlopPyFwt7BdSqvUZSqo3+gLEBE6UnEvMybkvhq0mapxcmoyuSh5td5f3PL/tZvdakwgJpiIKGwou85a74pm5XRtMmxfAcMcpi5ean0DMfsJ8sAlkd63jtlXDWP/o+wkqJdNYOSkmYYbpD/NRfXXij4pWZnD2rjwmAtoZ8CI68RCx0qVlvyV37n+n+bvJkJsQLg2a7VNkdPDve34By0W63rSrjPX5dTvMKS3Oo4vesnIlgVy0054qcFZbLUVQdYjTeN7iQ9TjXPGg7Anyzm4++oXn3ozo+ZHRh4j6N20CDQwa/mn2+ydvtY3vmig5/ZHtinizw+Gzt62WVe7Q+7n78hfixFc/670wLl+rwlkw32vjWqtBnxD86e/uk2+Jw0jE="
+  global:
+    - REPO_DIR=lda
+    - BUILD_COMMIT=2.0.0
+    - BUILD_DEPENDS=
+    - TEST_DEPENDS=
+    - UNICODE_WIDTH=32
+    - NP_BUILD_DEP=1.13.3
 
 language: python
 cache:
   - pip
-python: 3.5
-sudo: required
-dist: trusty
+python: 3.7
+os: linux
+dist: xenial
 services: docker
 
-matrix:
-  exclude:
-      # Exclude the default Python 3.5 build
-      - python: 3.5
-  include:
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-        - PLAT=i686
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.7
-        - NP_BUILD_DEP=1.14.5
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.8
-        - NP_BUILD_DEP=1.14.5
-    - os: osx
-      language: objective-c
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: osx
-      language: objective-c
-      env:
-        - MB_PYTHON_VERSION=3.7
-        - NP_BUILD_DEP=1.14.5
-    - os: osx
-      language: objective-c
-      env:
-        - MB_PYTHON_VERSION=3.8
-        - NP_BUILD_DEP=1.14.5
+jobs:
+  - os: linux
+    env:
+      - MB_PYTHON_VERSION=3.6
+  - os: linux
+    env:
+      - MB_PYTHON_VERSION=3.7
+      - NP_BUILD_DEP=1.14.5
+  - os: linux
+    env:
+      - MB_PYTHON_VERSION=3.8
+      - NP_BUILD_DEP=1.14.5
+  - os: osx
+    language: objective-c
+    env:
+      - MB_PYTHON_VERSION=3.6
+  - os: osx
+    language: objective-c
+    env:
+      - MB_PYTHON_VERSION=3.7
+      - NP_BUILD_DEP=1.14.5
+  - os: osx
+    language: objective-c
+    env:
+      - MB_PYTHON_VERSION=3.8
+      - NP_BUILD_DEP=1.14.5
 
 before_install:
     - BUILD_DEPENDS="numpy==$NP_BUILD_DEP ${BUILD_DEPENDS}"
@@ -68,16 +55,17 @@ install:
     # FIXME: have setup.py arrange for Cython code to be generated
     - pip install Cython
     - make -C lda
-    - build_wheel $REPO_DIR $PLAT
+    - build_wheel $REPO_DIR
 
 script:
-    - install_run $PLAT
+    - install_run
 
 after_success:
-    # Upload wheels to Rackspace container
-    - pip install wheelhouse-uploader
-    - python -m wheelhouse_uploader upload --local-folder
-          ${TRAVIS_BUILD_DIR}/wheelhouse/
-          --no-update-index
-          --region=${WHEELHOUSE_UPLOADER_REGION}
-          wheels
+  # PYPI_TOKEN is a secure variable set via the travis-ci.com website
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
+      python3 -m pip install twine
+      python3 -m twine upload --skip-existing -u __token__ -p "$PYPI_TOKEN" ${TRAVIS_BUILD_DIR}/wheelhouse/*.whl
+    else
+      echo "This build is connected to a pull request. Not uploading to PyPI."
+    fi
