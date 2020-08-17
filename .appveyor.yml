@@ -3,7 +3,7 @@ environment:
   global:
     REPO_DIR: lda
     PACKAGE_NAME: lda
-    BUILD_COMMIT: 1.1.0
+    BUILD_COMMIT: 2.0.0
     BUILD_DEPENDS: "cython"
     TEST_DEPENDS: "scipy"
     WHEELHOUSE_UPLOADER_REGION: IAD
