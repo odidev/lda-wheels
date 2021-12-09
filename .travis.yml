@@ -32,6 +32,37 @@ jobs:
     env:
       - MB_PYTHON_VERSION=3.9
       - NP_BUILD_DEP=1.19.5
+  - os: linux
+    arch: arm64
+    env:
+      - MB_PYTHON_VERSION=3.6
+      - PLAT=aarch64
+      - DOCKER_IMAGE=quay.io/pypa/manylinux2014_${PLAT}
+      - DOCKER_TEST_IMAGE=multibuild/xenial_arm64v8
+  - os: linux
+    arch: arm64
+    env:
+      - MB_PYTHON_VERSION=3.7
+      - NP_BUILD_DEP=1.14.5
+      - PLAT=aarch64
+      - DOCKER_IMAGE=quay.io/pypa/manylinux2014_${PLAT}
+      - DOCKER_TEST_IMAGE=multibuild/xenial_arm64v8
+  - os: linux
+    arch: arm64
+    env:
+      - MB_PYTHON_VERSION=3.8
+      - NP_BUILD_DEP=1.14.5
+      - PLAT=aarch64
+      - DOCKER_IMAGE=quay.io/pypa/manylinux2014_${PLAT}
+      - DOCKER_TEST_IMAGE=multibuild/xenial_arm64v8
+  - os: linux
+    arch: arm64
+    env:
+      - MB_PYTHON_VERSION=3.9
+      - NP_BUILD_DEP=1.19.5
+      - PLAT=aarch64
+      - DOCKER_IMAGE=quay.io/pypa/manylinux2014_${PLAT}
+      - DOCKER_TEST_IMAGE=multibuild/xenial_arm64v8
   - os: osx
     language: objective-c
     env:
